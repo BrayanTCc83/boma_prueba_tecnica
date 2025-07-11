@@ -1,0 +1,9 @@
+# Ignorando archivos de NPM que son generados automáticamente
+/**/node_modules
+/**/*lock.json
+
+# Ignorando carpetas de distibución
+/**/dist
+
+# Ignorando archivos de variables de entorno (por seguridad y privacidad)
+/**/.env
