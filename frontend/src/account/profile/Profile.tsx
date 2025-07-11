@@ -1,6 +1,6 @@
 import { JSX } from 'react';
 
-export const ROUTE_PROFILE: string = 'profile';
+export const ROUTE_PROFILE: string = '/profile';
 
 const Profile = (): JSX.Element => {
     return (

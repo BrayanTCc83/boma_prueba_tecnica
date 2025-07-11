@@ -1,0 +1,28 @@
+:root {
+    --main-color: rgb(77, 31, 99);
+    --second-color: rgb(49, 16, 64);
+    --padding: 25px;
+    --gap: 10px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    color: #fff;
+}
+
+body {
+    width: 100dvw;
+    height: 100dvh;
+}
+
+#root {
+    width: inherit;
+    height: inherit;
+}
+
+h1 {
+    color: var(--main-color);
+}

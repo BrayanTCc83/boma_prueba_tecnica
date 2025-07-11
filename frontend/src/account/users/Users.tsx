@@ -1,6 +1,6 @@
 import { JSX } from 'react';
 
-export const ROUTE_USERS: string = 'users';
+export const ROUTE_USERS: string = '/users';
 
 const Users = (): JSX.Element => {
     return (

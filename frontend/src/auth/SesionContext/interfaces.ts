@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import { FormEventHandler, MouseEventHandler, PropsWithChildren } from 'react';
 
 export interface ISesionContextProps extends PropsWithChildren {
 
@@ -6,4 +6,6 @@ export interface ISesionContextProps extends PropsWithChildren {
 
 export interface ISesionContext {
     auth: boolean
+    login: FormEventHandler<HTMLFormElement>
+    logout: MouseEventHandler<HTMLButtonElement>
 };

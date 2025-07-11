@@ -1,0 +1,83 @@
+main {
+    width: inherit;
+    height: inherit;
+    display: grid;
+}
+
+section {
+    background-color: var(--main-color);
+    grid-area: section;
+    padding: 25px 50px;
+    display: flex;
+
+    & > img {
+        overflow: hidden;
+        flex-grow: 1;
+        background-color: var(--second-color);
+        border-radius: 10px;
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+    }
+}
+
+form {
+    padding: var(--padding);
+    gap: var(--gap);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    grid-area: form;
+}
+
+@media (max-width: 479px) {
+    main {
+        grid-template-areas:
+        "section"
+        "form";
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+    }
+    form > * {
+        width: 350px;
+    }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+    main {
+        grid-template-areas:
+        "section"
+        "form";
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+    }
+    section {
+        height: 400px;
+    }
+    form > * {
+        width: 350px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    main {
+        grid-template-areas: "section form";
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 100vh;
+    }
+    form > * {
+        width: 350px;
+    }
+}
+
+@media (min-width: 1024px) {
+    main {
+        grid-template-areas: "section form";
+        grid-template-columns: 60% 40%;
+        grid-template-rows: 100vh;
+    }
+    form > * {
+        width: 350px;
+    }
+}
