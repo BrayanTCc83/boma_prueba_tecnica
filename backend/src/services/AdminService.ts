@@ -1,43 +1,26 @@
 import db from "../database/connection";
-
-interface CreateUserData {
-  email: string;
-  name: string;
-  lastName: string;
-  birth: string;   // formato YYYY-MM-DD
-  country: string;
-  role: 0 | 1;
-}
-
-interface UpdateUserData {
-  email?: string;
-  name?: string;
-  lastName?: string;
-  birth?: string;
-  country?: string;
-  role?: 0 | 1;
-}
+import { ICreateUser, IUser } from "../interface/user";
 
 export class AdminService {
-  async getAllUsers() {
+  static async getAllUsers(): Promise<IUser[]> {
     const result = await db.query(
       'SELECT id, email, name, last_name as "lastName", birth, country, role FROM users'
     );
     return result.rows;
   }
 
-  async createUser(data: CreateUserData) {
+  static async createUser(data: ICreateUser): Promise<IUser> {
     const result = await db.query(
-      `INSERT INTO users (email, name, last_name, birth, country, role)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO users (email, password, name, last_name, birth, country, role)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING id, email, name, last_name as "lastName", birth, country, role`,
-      [data.email, data.name, data.lastName, data.birth, data.country, data.role]
+      [data.email, data.password, data.name, data.lastName, data.birth, data.country, data.role]
     );
 
     return result.rows[0];
   }
 
-  async updateUser(id: string, data: UpdateUserData) {
+  static async updateUser(id: string, data: IUser) {
     const fields = [];
     const values: any[] = [];
     let idx = 1;
@@ -81,7 +64,7 @@ export class AdminService {
     return result.rows[0];
   }
 
-  async deleteUser(id: string) {
+  static async deleteUser(id: string) {
     const result = await db.query('DELETE FROM users WHERE id = $1 RETURNING id', [id]);
     if (result.rowCount === 0) {
       throw new Error('Usuario no encontrado');

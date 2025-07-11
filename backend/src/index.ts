@@ -4,10 +4,13 @@ import cors from 'cors';
 import { COOKIE, validateJWT } from './middleware/validateJWT';
 import db from './database/connection';
 import { UserService } from './services/UserService';
-import { LoginUserSchema, UserSchema } from './interface/user';
+import { CreateUserSchema, LoginUserSchema, UserSchema } from './interface/user';
+import { checkAdminRole } from './middleware/checkAdminRole';
+import { AdminService } from './services/AdminService';
 
 const expressApp = express();
 
+const adminRouter = express.Router();
 const sessionRouter = express.Router();
 
 expressApp.use(cors({
@@ -18,6 +21,7 @@ expressApp.use(cors({
 
 expressApp.use(bodyParser.json({}));
 sessionRouter.use(validateJWT);
+adminRouter.use(validateJWT, checkAdminRole);
 
 sessionRouter.get('/user', async (req, res) => {
   const userId: string = ((req as any).user.id as string);
@@ -71,12 +75,77 @@ expressApp.post('/login', async (req, res) => {
   }
 });
 
+adminRouter.get('/users', async (req, res) => {
+  const userId: string = ((req as any).user.id as string);
+
+  try {
+    const users = await AdminService.getAllUsers();
+    res.status(200).json({ users: users.filter( u => (u as any).id !== userId ) });
+  } catch(err) {
+    res.status(403).json({ message: 'Acceso denegado' });
+  }
+});
+
+adminRouter.post('/users', async (req, res) => {
+  const data = CreateUserSchema.safeParse(req.body);
+
+  if(!data.success) {
+    return res.status(400).json({ message: 'Información incompleta', errors: data.error.flatten() });
+  }
+
+  try {
+    const user = await AdminService.createUser(data.data);
+    res.status(200).json({ user });
+  } catch(err) {
+    console.log(err);
+    res.status(403).json({ message: 'Acceso denegado' });
+  }
+});
+
+adminRouter.patch('/users/:id', async (req, res) => {
+  const { id } = req.params;
+  const data = UserSchema.safeParse(req.body);
+
+  if(!id) {
+    return res.status(400).json({ message: 'Información incompleta, es necesario específicar la id' });
+  }
+
+  if(!data.success) {
+    return res.status(400).json({ message: 'Información incompleta', errors: data.error.flatten() });
+  }
+
+  try {
+    const user = await AdminService.updateUser(id, data.data);
+    res.status(200).json({ message: 'Usuario creado de manera exitosa', user });
+  } catch(err) {
+    console.log(err);
+    res.status(403).json({ message: 'Acceso denegado' });
+  }
+});
+
+adminRouter.delete('/users/:id', async (req, res) => {
+  const { id } = req.params;
+
+  if(!id) {
+    return res.status(400).json({ message: 'Información incompleta, es necesario específicar la id' });
+  }
+
+  try {
+    const user = await AdminService.deleteUser(id);
+    res.status(200).json({ message: 'Usuario eliminado de manera exitosa', user });
+  } catch(err) {
+    console.log(err);
+    res.status(403).json({ message: 'Acceso denegado' });
+  }
+});
+
 expressApp.get('/', (_, res) => {
   res.send({
     message: 'Inicializando proyecto backend.'
   });
 });
 
+expressApp.use('/admin', adminRouter);
 expressApp.use('/session', sessionRouter);
 
 expressApp.listen(process.env.PORT, () => {
