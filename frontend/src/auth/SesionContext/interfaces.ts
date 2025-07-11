@@ -8,4 +8,5 @@ export interface ISesionContext {
     auth: boolean
     login: FormEventHandler<HTMLFormElement>
     logout: MouseEventHandler<HTMLButtonElement>
+    isSuperAdmin: () => Promise<boolean>
 };

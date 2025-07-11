@@ -1,0 +1,22 @@
+main#profile {
+    display: grid;
+    grid-template-columns: max-content auto;
+    grid-template-rows: max-content auto;
+    grid-template-areas:
+        "t t"
+        "i d";
+    width: 100%;
+    height: fit-content;
+    padding: 25px;
+    gap: 25px;
+}
+
+#image {
+    grid-area: i;
+    width: 500px;
+    height: 700px;
+}
+
+#data {
+    grid-area: d;
+}

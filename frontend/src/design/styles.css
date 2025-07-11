@@ -10,7 +10,6 @@
     padding: 0;
     box-sizing: border-box;
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    color: #fff;
 }
 
 body {
@@ -25,4 +24,8 @@ body {
 
 h1 {
     color: var(--main-color);
+}
+
+a > button {
+    width: inherit;
 }

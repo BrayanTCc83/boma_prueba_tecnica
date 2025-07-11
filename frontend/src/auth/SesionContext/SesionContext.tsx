@@ -5,7 +5,8 @@ import type { ISesionContext, ISesionContextProps } from './interfaces';
 const initSesionContext: ISesionContext = {
     auth: false,
     login: () => {},
-    logout: () => {}
+    logout: () => {},
+    isSuperAdmin: async () => { return new Promise((res, _) => res(false)) }
 };
 
 export const SesionContext = createContext<ISesionContext>(initSesionContext);
@@ -27,6 +28,11 @@ const SesionContextProvider = ({ children }: ISesionContextProps): JSX.Element =
         setAuth(false);
     }
 
+    const isSuperAdmin = async (): Promise<boolean> => {
+        // Temporal hasta implementar base de datos y API
+        return new Promise((res, _) => res(true));
+    }
+
     useEffect(() => {
         // Temporal hasta implementar base de datos y API
         setAuth(false);
@@ -36,7 +42,8 @@ const SesionContextProvider = ({ children }: ISesionContextProps): JSX.Element =
         <SesionContext.Provider value={{
             auth,
             login,
-            logout
+            logout,
+            isSuperAdmin
         }}>
             { children }
         </SesionContext.Provider>

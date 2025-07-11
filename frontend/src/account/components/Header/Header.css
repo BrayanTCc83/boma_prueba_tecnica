@@ -1,0 +1,29 @@
+header {
+    width: inherit;
+    height: 50px;
+    background-color: var(--main-color);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 25px;
+}
+
+nav {
+    & > ul {
+        display: flex;
+        flex-direction: row-reverse;
+        list-style: none;
+        gap: 25px;
+        & button {
+            gap: 10px;
+        }
+    }
+    & span {
+        font-size: 16px;
+        color: #fff;
+    }
+
+    & svg, & path {
+        color: #fff;
+    }
+}
