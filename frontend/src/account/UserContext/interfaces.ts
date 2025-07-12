@@ -10,6 +10,7 @@ export interface IUser {
     birth: string
     country: string
     role: Role
+    password?: string
 }
 
 export interface IUserRegister extends IUser {
@@ -20,10 +21,17 @@ export interface IUsersContextProps extends PropsWithChildren {
 
 };
 
+
+export interface IStatus {
+    success: boolean
+    message: string
+};
+
 export interface IUsersContext {
     getUsers: () => Promise<IUser[]>
-    getUser: () => Promise<IUser>
+    getUser: () => Promise<IUser|null>
     editUser: (id: string, user: IUser) => Promise<void>
     createUser: (user: IUser) => Promise<void>
     deleteUser: (id: string) => Promise<void>
+    status: IStatus
 };

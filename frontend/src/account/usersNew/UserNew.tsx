@@ -20,6 +20,7 @@ const UserNew = (): JSX.Element => {
             const user: IUser = {
                 id: '',
                 email: data.get('email') as string,
+                password: data.get('password') as string,
                 birth: data.get('birth') as string,
                 country: data.get('country') as string,
                 lastName: data.get('lastName') as string,
@@ -36,7 +37,7 @@ const UserNew = (): JSX.Element => {
     };
 
     return (
-        <UserForm title='Nuevo Usuario' submitMessage='Crear' onSubmit={handleCreate}/>
+        <UserForm title='Nuevo Usuario' submitMessage='Crear' onSubmit={handleCreate} password={true}/>
     );
 };
 

@@ -1,28 +1,26 @@
+import columns from './config';
 import Header from '../components/Header/Header';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 import { DataGrid } from '@mui/x-data-grid';
-import { Link, Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { IUser } from '../UserContext/interfaces';
-import { IconButton, Paper } from '@mui/material';
+import { ROUTE_PROFILE } from '../profile/Profile';
 import { ROUTE_USER_NEW } from '../usersNew/UserNew';
 import { UsersContext } from '../UserContext/UserContext';
 import { JSX, useContext, useEffect, useState } from 'react';
+import { Alert, AlertTitle, IconButton, Paper } from '@mui/material';
+import { Link, Navigate, Outlet, useNavigate } from 'react-router-dom';
+import { SesionContext } from '../../auth/SesionContext/SesionContext';
 
 import './Users.css'
-import columns from './config';
-import { SesionContext } from '../../auth/SesionContext/SesionContext';
-import { ROUTE_PROFILE } from '../profile/Profile';
 
 export const ROUTE_USERS: string = '/users';
-
-const paginationModel = { page: 0, pageSize: 10 };
 
 const Users = (): JSX.Element => {
     const { isSuperAdmin } = useContext(SesionContext);
     const [ superAdmin, setSuperAdmin ] = useState<boolean>(true);
 
-    const { getUsers } = useContext(UsersContext);
+    const { getUsers, status } = useContext(UsersContext);
     const [ rows, setRows ] = useState<IUser[]>([]);
     
     const navigate = useNavigate();
@@ -35,6 +33,15 @@ const Users = (): JSX.Element => {
             .then( users => setRows(users) )
             .catch( err => console.log(err) );
     }, []);
+
+    useEffect(() => {
+        console.log(status);
+        if(status.success && status.message?.length > 0){
+            getUsers()
+                .then( users => setRows(users) )
+                .catch( err => console.log(err) );
+        }
+    }, [ status ]);
 
     return (
         !superAdmin ? <Navigate to={ROUTE_PROFILE}/> : 
@@ -54,13 +61,19 @@ const Users = (): JSX.Element => {
                     <DataGrid
                         rows={rows}
                         columns={columns}
-                        initialState={{ pagination: { paginationModel } }}
-                        pageSizeOptions={[10, 20]}
+                        pageSizeOptions={[ rows.length ]}
                         sx={{ border: 0 }}
                     />
                 </Paper>
             </main>
-            <Outlet />
+            <Outlet/>
+            {
+                status.message?.length > 0 ?
+                    <Alert>
+                        <AlertTitle>{status.message}</AlertTitle>
+                    </Alert>
+                : null
+            }
         </>
     );
 };

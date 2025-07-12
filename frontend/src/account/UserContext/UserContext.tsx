@@ -1,56 +1,144 @@
 import { createContext, FormEventHandler, JSX, MouseEventHandler, useEffect, useState } from 'react';
 
-import type { IUser, IUsersContext, IUsersContextProps } from './interfaces';
+import type { IStatus, IUser, IUsersContext, IUsersContextProps } from './interfaces';
 
 const initUsersContext: IUsersContext = {
     deleteUser: async () => {},
     editUser: async () => {},
     createUser: async () => {},
     getUser: async () => { return new Promise((res, _) => res({} as IUser)) },
-    getUsers: async () => { return new Promise((res, _) => res([])) }
+    getUsers: async () => { return new Promise((res, _) => res([])) },
+    status: { message: '', success: true }
+};
+
+const FetchConfiguration: RequestInit = {
+    credentials: 'include',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
 };
 
 export const UsersContext = createContext<IUsersContext>(initUsersContext);
 
 const UsersContextProvider = ({ children }: IUsersContextProps): JSX.Element => {
+    const [ status, setStatus ] = useState<IStatus>({ message: '', success: true });
+
     const deleteUser = async (id: string) => {
-        // Temporal hasta implementar base de datos y API
-        console.log(`Eliminando usuario ${id}`);
+        fetch(`${import.meta.env.VITE_API_URL}/admin/users/${id}`, {
+            ...FetchConfiguration,
+            method: 'DELETE'
+        })
+            .then( res => {
+                if(!res.ok) throw res;
+                return res.json();
+            })
+            .then( json => {
+                setStatus(_ => ({
+                    message: json.message,
+                    success: true
+                }));
+            })
+            .catch(err => {
+                setStatus(_ => ({
+                    message: err.message,
+                    success: false
+                }));
+            });
     }
 
     const editUser = async (id: string, user: IUser) => {
-        // Temporal hasta implementar base de datos y API
-        console.log(`Editando usuario ${id} ${Object.entries(user).join(',')}`);
+        fetch(`${import.meta.env.VITE_API_URL}/admin/users/${id}`, {
+            ...FetchConfiguration,
+            method: 'PATCH',
+            body: JSON.stringify(user)
+        })
+            .then( res => {
+                if(!res.ok) throw res;
+                return res.json();
+            })
+            .then( json => {
+                setStatus(_ => ({
+                    message: json.message,
+                    success: true
+                }));
+            })
+            .catch(err => {
+                setStatus(_ => ({
+                    message: err.message,
+                    success: false
+                }));
+            });
     }
 
     const createUser = async (user: IUser) => {
-        // Temporal hasta implementar base de datos y API
-        console.log(`Editando usuario ${Object.entries(user).join(',')}`);
+        fetch(`${import.meta.env.VITE_API_URL}/admin/users`, {
+            ...FetchConfiguration,
+            method: 'POST',
+            body: JSON.stringify(user)
+        })
+            .then( res => {
+                if(!res.ok) throw res;
+                return res.json();
+            })
+            .then( json => {
+                setStatus(_ => ({
+                    message: json.message,
+                    success: true
+                }));
+            })
+            .catch(err => {
+                setStatus(_ => ({
+                    message: err.message,
+                    success: false
+                }));
+            });
     }
 
-    const getUser = async (): Promise<IUser> => {
-        // Temporal hasta implementar base de datos y API
-        return new Promise(( res, _ ) => {
-            return res({ id: '1', lastName: 'Snow', name: 'Jon', birth: '10-01-2003', country: 'Hidalgo', email: 'brayan.tellez.cruz.000@gmail.com', role: 0 });
-        });
+    const getUser = async (): Promise<IUser|null> => {
+        return fetch(`${import.meta.env.VITE_API_URL}/session/user`, {
+            ...FetchConfiguration,
+            method: 'GET'
+        })
+            .then( res => {
+                if(!res.ok) throw res.statusText;
+                return res.json();
+            })
+            .then( json => {
+                return json.user as IUser;
+            } )
+            .catch(_ => {
+                return null;
+            });
     }
 
     const getUsers = async (): Promise<IUser[]> => {
-        // Temporal hasta implementar base de datos y API
-        return new Promise(( res, _ ) => {
-            return res([
-                { id: '1', lastName: 'Snow', name: 'Jon', birth: '10-01-2003', country: 'Hidalgo', email: 'brayan.tellez.cruz.000@gmail.com', role: 0 },
-                { id: '2', lastName: 'Lannister', name: 'Cersei', birth: '10-01-2003', country: 'Hidalgo', email: 'brayan.tellez.cruz.000@gmail.com', role: 0 },
-                { id: '3', lastName: 'Lannister', name: 'Jaime', birth: '10-01-2003', country: 'Hidalgo', email: 'brayan.tellez.cruz.000@gmail.com', role: 0 },
-                { id: '4', lastName: 'Stark', name: 'Arya', birth: '10-01-2003', country: 'Hidalgo', email: 'brayan.tellez.cruz.000@gmail.com', role: 0 },
-                { id: '5', lastName: 'Targaryen', name: 'Daenerys', birth: '10-01-2003', country: 'Hidalgo', email: 'brayan.tellez.cruz.000@gmail.com', role: 0 },
-                { id: '6', lastName: 'Melisandre', name: 'My name', birth: '10-01-2003', country: 'Hidalgo', email: 'brayan.tellez.cruz.000@gmail.com', role: 0 },
-                { id: '7', lastName: 'Clifford', name: 'Ferrara', birth: '10-01-2003', country: 'Hidalgo', email: 'brayan.tellez.cruz.000@gmail.com', role: 0 },
-                { id: '8', lastName: 'Frances', name: 'Rossini', birth: '10-01-2003', country: 'Hidalgo', email: 'brayan.tellez.cruz.000@gmail.com', role: 0 },
-                { id: '9', lastName: 'Roxie', name: 'Harvey', birth: '10-01-2003', country: 'Hidalgo', email: 'brayan.tellez.cruz.000@gmail.com', role: 0 },
-            ]);
-        });
+        return fetch(`${import.meta.env.VITE_API_URL}/admin/users`, {
+            ...FetchConfiguration,
+            method: 'GET',
+        })
+            .then( res => {
+                if(!res.ok) throw res;
+                return res.json();
+            })
+            .then( json => {
+                return json.users as IUser[];
+            })
+            .catch(_ => {
+                return [];
+            });
     }
+
+    useEffect(() => {
+        if(status.message?.length > 0) {
+            setTimeout(() => {
+                setStatus(_ => ({
+                    message: '',
+                    success: true
+                }));
+            }, 5000);
+        }
+    }, [ status ]);
 
     return (
         <UsersContext.Provider value={{
@@ -58,7 +146,8 @@ const UsersContextProvider = ({ children }: IUsersContextProps): JSX.Element => 
             editUser,
             getUser,
             getUsers,
-            createUser
+            createUser,
+            status
         }}>
             { children }
         </UsersContext.Provider>

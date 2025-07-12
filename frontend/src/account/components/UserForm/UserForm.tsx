@@ -1,17 +1,19 @@
 import { Link } from 'react-router-dom';
 import { FormEventHandler, JSX, useEffect, useState } from 'react';
 import { ROUTE_USERS } from '../../users/Users';
-import { IUser } from '../../UserContext/interfaces';
+import { IUser, Role } from '../../UserContext/interfaces';
 import { Button, Dialog, FormControl, Input, InputLabel, MenuItem, Select } from '@mui/material';
+import { SelectChangeEvent } from '@mui/material/Select';
 
 interface IUserFormProps {
     title: string
     submitMessage: string
     data?: IUser
+    password?: boolean
     onSubmit: FormEventHandler<HTMLFormElement>
 }
 
-const UserForm = ({ title, data, submitMessage, onSubmit }: IUserFormProps): JSX.Element => {
+const UserForm = ({ title, data, submitMessage, onSubmit, password = false}: IUserFormProps): JSX.Element => {
   const [formData, setFormData] = useState<IUser>({
     id: '',
     email: '',
@@ -19,7 +21,8 @@ const UserForm = ({ title, data, submitMessage, onSubmit }: IUserFormProps): JSX
     lastName: '',
     country: '',
     birth: '',
-    role: 0
+    role: 0,
+    ...( password ? {password: ''} : {})
   });
 
   useEffect(() => {
@@ -36,6 +39,14 @@ const UserForm = ({ title, data, submitMessage, onSubmit }: IUserFormProps): JSX
     setFormData(prev => ({
       ...prev,
       [name]: value,
+    }));
+  };
+  
+  const handleChangeSelect = (event: SelectChangeEvent) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: Number(value) as Role,
     }));
   };
 
@@ -60,6 +71,22 @@ const UserForm = ({ title, data, submitMessage, onSubmit }: IUserFormProps): JSX
             placeholder='correo@example.com'
           />
         </FormControl>
+
+        {
+          password ? 
+            <FormControl margin='normal'>
+              <InputLabel htmlFor='password'>Contraseña:</InputLabel>
+              <Input
+                id='password'
+                name='password'
+                type='password'
+                value={formData.password}
+                onChange={handleChange}
+                placeholder='unacontraseña'
+              />
+            </FormControl>
+          : null
+        }
 
         <FormControl margin='normal'>
           <InputLabel htmlFor='name'>Nombre:</InputLabel>
@@ -102,15 +129,15 @@ const UserForm = ({ title, data, submitMessage, onSubmit }: IUserFormProps): JSX
             id='birth'
             name='birth'
             type='date'
-            value={formData.birth}
+            value={formData.birth.split('T')[0]}
             onChange={handleChange}
           />
         </FormControl>
 
         <FormControl margin='normal'>
-          <Select name='role' id='role' value={formData.role}>
-            <MenuItem value={0}>Administrador</MenuItem>
-            <MenuItem value={1}>Super Administrador</MenuItem>
+          <Select name='role' id='role' value={`${formData.role}`} onChange={handleChangeSelect}>
+            <MenuItem value={'0'}>Administrador</MenuItem>
+            <MenuItem value={'1'}>Super Administrador</MenuItem>
           </Select>
         </FormControl>
 
