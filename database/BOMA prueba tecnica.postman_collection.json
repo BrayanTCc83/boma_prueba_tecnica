@@ -1,0 +1,204 @@
+{
+	"info": {
+		"_postman_id": "b6c0fe21-6586-4c19-bdc0-b89089e4b616",
+		"name": "BOMA prueba tecnica",
+		"description": "Esta es la Suite de Postman para las pruebas de los enpoints necesarios para la prueba técnica.\n\nDividí la suite en dos carpetas, sesión, para aquellos usuarios que cuya máxima verificación es de inicio de sesión y administrador, para aquellos que necesitan ese rol para funcionar.\n\nEs necesario configurar un entorno con las variables:\n\n- **api**: que debe tener la url donde está desplegado el backend\n    \n- **id:** que debe ser un UUID registrado dentro de la base de datos para hacer pruebas de modificación y/o actualización de información de un usuario",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31846549",
+		"_collection_link": "https://lua888-2766.postman.co/workspace/Team-Workspace~bcb10a78-cf52-47c2-85b3-d2a40895c01c/collection/31846549-b6c0fe21-6586-4c19-bdc0-b89089e4b616?action=share&source=collection_link&creator=31846549"
+	},
+	"item": [
+		{
+			"name": "Sesión",
+			"item": [
+				{
+					"name": "Iniciar Sesión",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"brayan.tellez.cruz.000@gmail.com\",\r\n    \"password\": \"12345678\",\r\n    \"remember\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/login",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cerrar Sesión",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n}"
+						},
+						"url": {
+							"raw": "{{api}}/session/logout",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"session",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Es Administrador",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/session/is-admin",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"session",
+								"is-admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Información Usuario",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/session/user",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"session",
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Prueba de los endpoints habilitados para todos (login) y restringidos solamente por el inicio de sesión (lougout, get data y is admin).\n\nSolamente necesita configurar en el entorno la variable de api para saber en que url se encuentra desplegada la misma."
+		},
+		{
+			"name": "Administrador",
+			"item": [
+				{
+					"name": "Listar Usuarios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/admin/users",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Usuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"nuevoCorreo@ejemplo.com\",\r\n    \"password\": \"12345678\",\r\n    \"name\": \"Otro\",\r\n    \"lastName\": \"Usuario\",\r\n    \"birth\": \"2005-10-12\",\r\n    \"country\": \"CDMX\",\r\n    \"role\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/admin/users",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Usuario",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{api}}/admin/users/{{id}}",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editar Usuario",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"nuevoCorreo@ejemplo.com\",\r\n    \"name\": \"OtroS\",\r\n    \"lastName\": \"Usuario\",\r\n    \"birth\": \"2005-10-12\",\r\n    \"country\": \"CDMX\",\r\n    \"role\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/admin/users/{{id}}",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Prueba de los endpoints habilitados para todos administradores, es decir usuarios logeados y que tengan el rol de administrador.\n\nSolamente necesita configurar en el entorno la variable de api para saber en que url se encuentra desplegada la misma y la id del usuario con el que se harán pruebas, puede ser generado con el create o bien puede seleccionarse a través de los elementos de prueba generados en el archivo users.sql."
+		}
+	]
+}
