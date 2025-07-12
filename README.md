@@ -64,7 +64,7 @@ Para ejecutar el frontend es necesario configurar el proyecto correctamente. Par
 
 > VITE_PORT=3001
 >
-> VITE_API_URL=http://localhost:300
+> VITE_API_URL=http://localhost:3000
 
 2) __Ejecute:__
 > npm install
