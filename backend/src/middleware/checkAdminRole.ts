@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import db from '../database/connection'; // Asegúrate de que este es tu pool de PostgreSQL
+import db from '../database/connection';
 
 export const checkAdminRole = async (req: Request, res: Response, next: NextFunction) => {
   const userId = (req as any).user?.id;
